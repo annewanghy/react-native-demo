@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {Text, View, Button} from 'react-native';
+import {Text, View, Button, Modal} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -39,17 +39,33 @@ const DetailsScreen = ({route, navigation}) => {
         onPress={() => navigation.navigate('Home')}
         title="go back to home"
       />
+      <Button
+        onPress={() => navigation.navigate('MyModal')}
+        title="open Modal"
+      />
     </View>
   );
 };
+
+const ModalScreen = ({navigation}) => (
+  <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <Text style={{fontSize: 30}}>This is a modal!</Text>
+    <Button onPress={() => navigation.goBack()} title="Dismiss" />
+  </View>
+);
 
 const Stack = createNativeStackNavigator();
 
 const HomeApp = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Group>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Group>
+      <Stack.Group screenOptions={{presentation: 'modal'}}>
+        <Stack.Screen name="MyModal" component={ModalScreen} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 };
