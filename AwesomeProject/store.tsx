@@ -1,4 +1,14 @@
-import {createStore, combineReducers} from 'redux';
+import {combineReducers, applyMiddleware} from 'redux';
+import {configureStore, Tuple} from '@reduxjs/toolkit';
+
+const middlewares = [
+  /* other middlewares */
+];
+
+if (__DEV__) {
+  const createDebugger = require('redux-flipper').default;
+  middlewares.push(createDebugger());
+}
 
 function counter(state, action) {
   if (typeof state === 'undefined') {
@@ -15,6 +25,9 @@ function counter(state, action) {
   }
 }
 
-let store = createStore(combineReducers({count: counter}));
+let store = configureStore({
+  reducer: combineReducers({count: counter}),
+  middleware: () => middlewares,
+});
 
 export {store};
