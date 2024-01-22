@@ -10,10 +10,13 @@ import {Text, View, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Provider, connect} from 'react-redux';
-import {store} from './store';
+import {Provider, useSelector, useDispatch} from 'react-redux';
+import {store, selectCounter} from './store';
 
-const HomeScreen = ({navigation, count, dispatch, route}) => {
+const HomeScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const count = useSelector(selectCounter);
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home Screen</Text>
@@ -32,8 +35,6 @@ const HomeScreen = ({navigation, count, dispatch, route}) => {
     </View>
   );
 };
-
-let CounterHome = connect(state => ({count: state.count}))(HomeScreen);
 
 const DetailsScreen = ({route, navigation}) => {
   const {itemId, otherParam} = route.params;
@@ -67,7 +68,7 @@ const HomeApp = () => {
   return (
     <Stack.Navigator>
       <Stack.Group>
-        <Stack.Screen name="Home" component={CounterHome} />
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
       </Stack.Group>
       <Stack.Group screenOptions={{presentation: 'modal'}}>
