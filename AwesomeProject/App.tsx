@@ -6,15 +6,20 @@
  */
 
 import React from 'react';
-import {Text, View, Button, Modal} from 'react-native';
+import {Text, View, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Provider, connect} from 'react-redux';
+import {store} from './store';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation, count, dispatch, route}) => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>1221Home Screen</Text>
+      <Text>Home Screen</Text>
+      <Text>{count}</Text>
+      <Button title="Increment" onPress={() => dispatch({type: 'INCREMENT'})} />
+      <Button title="Decrement" onPress={() => dispatch({type: 'DECREMENT'})} />
       <Button
         onPress={() =>
           navigation.navigate('Details', {
@@ -27,6 +32,8 @@ const HomeScreen = ({navigation}) => {
     </View>
   );
 };
+
+let CounterHome = connect(state => ({count: state.count}))(HomeScreen);
 
 const DetailsScreen = ({route, navigation}) => {
   const {itemId, otherParam} = route.params;
@@ -60,7 +67,7 @@ const HomeApp = () => {
   return (
     <Stack.Navigator>
       <Stack.Group>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={CounterHome} />
         <Stack.Screen name="Details" component={DetailsScreen} />
       </Stack.Group>
       <Stack.Group screenOptions={{presentation: 'modal'}}>
@@ -90,13 +97,15 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Stack.Screen name="Home" component={HomeApp} />
-        <Stack.Screen name="Setting" component={SettingsScreen} />
-        <Stack.Screen name="About" component={AboutScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Stack.Screen name="Home" component={HomeApp} />
+          <Stack.Screen name="Setting" component={SettingsScreen} />
+          <Stack.Screen name="About" component={AboutScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
